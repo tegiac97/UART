@@ -6,6 +6,9 @@ int main() {
 	while (1)
 	{        
 		char ReceivedChar;
-		printf("HelloWorld");
-		__delay_ms(250);
+		__C30_UART = 1;
+		fflush(stdin);
+		ReceivedChar = U1RXREG;
+		__C30_UART = 2;
+		printf("%c", ReceivedChar);
 }
