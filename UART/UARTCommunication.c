@@ -7,10 +7,10 @@ int main() {
 	while (1) {
 		char *buffer;
 		while (U1STAbits.URXDA==1)
-		{			
+		{	
 			*buffer = U1RXREG;
 			printf("%c ",*buffer);
-			__delay_ms(75);
+			__delay_ms(100);
 			buffer++;
 		}
 	}
