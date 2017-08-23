@@ -3,13 +3,17 @@
 
 int main() {
 	enableUART1(1, 0, 0, 1, 5);
-	while (1)
-	{
-		char ReceivedChar;
-		__C30_UART = 1;
-		fflush(stdin);
-		ReceivedChar = U1RXREG;
-		__C30_UART = 2;
-		printf("%c", ReceivedChar);
+	enableUART2(1, 0, 0, 1, 5);
+	while (1) {
+		char *buffer;
+		while (U1STAbits.URXDA==1)
+		{			
+			*buffer = U1RXREG;
+			printf("%c ",*buffer);
+			__delay_ms(75);
+			buffer++;
+		}
 	}
+
 }
+
