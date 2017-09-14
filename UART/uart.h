@@ -1,5 +1,4 @@
 #pragma once
-#include"configuration.h"
 
 
 void enableUART1(short int stopBit, short int parityData, short int autoBaud, short int transfer ,short int baudrate) {	
@@ -8,6 +7,7 @@ void enableUART1(short int stopBit, short int parityData, short int autoBaud, sh
 	U1MODEbits.ABAUD = autoBaud;
 	U1STAbits.UTXEN = transfer;
 	U1BRG = baudrate;
+	U1STAbits.URXISEL = 0;			//// Interrupt after one RX character is received
 	U1MODEbits.UARTEN = 1;
 }
 
