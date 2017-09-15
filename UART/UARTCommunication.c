@@ -1,6 +1,6 @@
 
 #pragma once
-#pragma config FOSFPR = HS             // Oscillator (Internal Fast RC (No change to Primary Osc Mode bits))
+#pragma config FOSFPR = HS              // Oscillator (HS)
 #pragma config FCKSMEN = CSW_FSCM_OFF   // Clock Switching and Monitor (Sw Disabled, Mon Disabled)
 
 // FWDT
@@ -38,49 +38,55 @@
 
 // #pragma config statements should precede project file includes.
 // Use project enums instead of #define for ON and OFF.
+
 #define FCY 2000000UL
+#define baud 9600
+#define UxBRG (FCY/(16*baud)-1)
 #include<p30F6010A.h>
 #include<xc.h>
 #include<stdio.h>
 #include<libpic30.h>
 #include<stdio.h>
 #include"uart.h"
+
 char receivedChar;
 char s[20],buf[20];
-int i = 0, sign = 0,t=0;
+int i = 0, sign = 0, t = 0;
 
 int main() {
-	enableUART1(1, 0, 0, 1, 12);
-	IEC0bits.U1RXIE = 1; // bat ngat nhan ky tu
+	
+}
+
+void printString() {
+	enableUART1(1, 0, 0, UxBRG, 1, 1, 1);			
+												
 	while (1)
 	{
-		if (sign==1)
-		{
+		if (sign==1){							//sign=1 
 			printf("%s  ", buf);
-			memset(buf, 0, sizeof(buf));
+			memset(buf, 0, sizeof(buf));		//xoa buf
 			sign = 0; 
 			i = 0;
 		}
-		else
-		{	
+		else{	
 		}
 	}
 }
 
 void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(void) {
 	receivedChar = U1RXREG;
-	if(receivedChar != 'c')
+	if(receivedChar != '/')		//Neu khong nhan duoc ki tu /
 	{
-		s[i] = receivedChar;
-		IFS0bits.U1RXIF = 0; // xoa co ngat
+		s[i] = receivedChar;	//luu cac byte vao chuoi s
+		IFS0bits.U1RXIF = 0;	// xoa co ngat
 		i++;
 	}
 	else
 	{
-		sign = 1;
+		sign = 1;				//Neu sign=1 thi dung viec nhan them ki tu tu uart		
 		for ( t = 0; t < i; t++)
 		{
-			buf[t] = s[t];
+			buf[t] = s[t];		//va chuyen cac ki tu tu chuoi s sang buf
 		}
 	}	
 }
