@@ -49,25 +49,18 @@
 #include<stdio.h>
 #include"uart.h"
 
-//char printString();
-
 char receivedChar;
-char s[20],buf[20];
+char s[20], buf[20];
 int i = 0, sign = 0, t = 0;
 
+
 int main() {
-	enableUART1(1, 0, 0, UxBRG, 1, 1, 1);
-	char receivedString[99];
-	*receivedString = printString();
-	printf("%s", receivedString);
+	enableUART1(1, 0, 0, 12, 1, 1, 1);
 
-}
-
-
-char printString() {
-	while (1){
+	while (1)
+	{
 		if (sign == 1) {							//sign=1 
-			return buf;
+			printf("%s  ", buf);
 			memset(buf, 0, sizeof(buf));		//xoa buf
 			sign = 0;
 			i = 0;
@@ -77,24 +70,9 @@ char printString() {
 	}
 }
 
-
-//int main() {
-//	enableUART1(1, 0, 0, 12, 1, 1, 1);
-//	while (1){
-//		if (sign==1){							//sign=1 
-//			printf("%s  ", buf);
-//			memset(buf, 0, sizeof(buf));		//xoa buf
-//			sign = 0; 
-//			i = 0;
-//		}
-//		else{	
-//		}
-//	}
-//}
-
 void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(void) {
 	receivedChar = U1RXREG;
-	if(receivedChar != 'c')		//Neu khong nhan duoc ki tu /
+	if (receivedChar != 'c')		//Neu khong nhan duoc ki tu /
 	{
 		s[i] = receivedChar;	//luu cac byte vao chuoi s
 		IFS0bits.U1RXIF = 0;	// xoa co ngat
@@ -103,9 +81,9 @@ void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(void) {
 	else
 	{
 		sign = 1;				//Neu sign=1 thi dung viec nhan them ki tu tu uart		
-		for ( t = 0; t < i; t++)
+		for (t = 0; t < i; t++)
 		{
 			buf[t] = s[t];		//va chuyen cac ki tu tu chuoi s sang buf
 		}
-	}	
+	}
 }

@@ -1,4 +1,8 @@
-#pragma once
+#include<p30F6010A.h>
+#include<xc.h>
+#include<stdio.h>
+#include<libpic30.h>
+#include<stdio.h>
 
 
 /*enableUART1(Stop Bit, Parity Data, auto baudrata, enable tranfer, baudrate, interrupt, flag interrupt received)
@@ -18,25 +22,61 @@
 													0x =Interrupt flag bit is set when a character is received
 - flagRX				flag interrupt RX bit		*/
 
-void enableUART1(short int stopBit, short int parityData, short int autoBaud, short int baudrate, short int transfer, short int interruptRX, short int flagInterruptRX) {
+void enableUART1(short int stopBit, short int parityData, short int autoBaud, short int baud_rate, short int transfer, short int interruptRX, short int flagInterruptRX) {
 	U1MODEbits.STSEL = stopBit;
 	U1MODEbits.PDSEL = parityData;
 	U1MODEbits.ABAUD = autoBaud;
 	U1STAbits.UTXEN = transfer;
-	U1BRG = baudrate;
+	U1BRG = baud_rate;
 	U1STAbits.URXISEL = interruptRX;			//// Interrupt after one RX character is received
 	IEC0bits.U1RXIE = flagInterruptRX;			// bat ngat nhan ky tu
 	U1MODEbits.UARTEN = 1;
 }
 
-void enableUART2(short int stopBit, short int parityData, short int autoBaud, short int transfer, short int baudrate, short int interrupt, short int flagInterrupt) {
-	
-	U2MODEbits.STSEL = stopBit;
-	U2MODEbits.PDSEL = parityData;
-	U2MODEbits.ABAUD = autoBaud;
-	U2STAbits.UTXEN = transfer;
-	U2BRG = baudrate;
-	U2STAbits.URXISEL = 0;
-	IEC1bits.U2RXIE = 1;				// bat ngat nhan ky tu
-	U2MODEbits.UARTEN = 1;
-}
+//void enableUART2(short int stopBit, short int parityData, short int autoBaud, short int transfer, short int baud_rate, short int interrupt, short int flagInterrupt) {
+//	
+//	U2MODEbits.STSEL = stopBit;
+//	U2MODEbits.PDSEL = parityData;
+//	U2MODEbits.ABAUD = autoBaud;
+//	U2STAbits.UTXEN = transfer;
+//	U2BRG = baud_rate;
+//	U2STAbits.URXISEL = 0;
+//	IEC1bits.U2RXIE = 1;				// bat ngat nhan ky tu
+//	U2MODEbits.UARTEN = 1;
+//}
+
+
+//char receivedChar;
+//char receivedString[33], buf[33];
+//int i = 0, t = 0;
+//int sign;
+
+//
+//void printString() {
+//	while (1) {
+//		if (sign == 1) {
+//			printf("%s ", buf);
+//			memset(buf, 0, sizeof(buf));
+//			i = 0;
+//			sign = 0;
+//		}
+//	}
+//}
+//
+//void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt() {	// Moi khi RXREG nhan 1 ki tu thi nhay vao trong ham nay
+//	receivedChar = U1RXREG;
+//	if (receivedChar != 'c') {
+//		receivedString[i] = receivedChar;
+//		IFS0bits.U1RXIF = 0; // xoa co ngat
+//		i++;
+//	}
+//	else {
+//			sign = 1;				//Neu sign=1 thi dung viec nhan them ki tu tu uart	
+//			
+//			for (t = 0; t < i; t++)
+//			{
+//				buf[t] = receivedString[t];		//va chuyen cac ki tu tu chuoi s sang buf
+//			}
+//			memset(receivedString, 0, sizeof(receivedString));
+//	}
+//}
